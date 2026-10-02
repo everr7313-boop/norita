@@ -259,6 +259,10 @@
   </div>
 
   <script>
+    // ⚠️ IMPORTANTE: Reemplaza esto con TU endpoint real de Formspree
+    // Ejemplo: "https://formspree.io/f/mzzbqkrd"
+    const FORMSPREE_ENDPOINT = "https://formspree.io/f/TU_ID_AQUI";
+
     let selectedPlan = "";
     let noBtnCount = 0;
 
@@ -328,17 +332,28 @@
       document.getElementById('ticket-date').innerText = dateVal;
       document.getElementById('ticket-plan').innerText = selectedPlan;
 
-      // Envío SILENCIOSO e INVISIBLE a tu correo en segundo plano
-      fetch("https://formspree.io/f/everarath2020@gmail.com", {
+      // Envío a Formspree (con logs para depurar)
+      fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({
           destino: "Ever",
           de: "Norita",
           fecha_elegida: dateVal,
           plan_seleccionado: selectedPlan
         })
-      }).catch(() => {});
+      })
+      .then(res => {
+        if (res.ok) {
+          console.log("✅ Enviado correctamente a Formspree");
+        } else {
+          console.error("❌ Error Formspree:", res.status, res.statusText);
+        }
+      })
+      .catch(err => console.error("❌ Error de red:", err));
 
       goToStep(4);
     }
